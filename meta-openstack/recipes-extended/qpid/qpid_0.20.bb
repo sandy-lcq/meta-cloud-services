@@ -17,7 +17,10 @@ SRC_URI[sha256sum] = "31b80ba3c4773d288b4e6245e3b2048438386331d460f7a7b0794cbd20
 
 S = "${WORKDIR}/${PN}c-${PV}"
 
-inherit autotools python-dir perlnative cpan-base update-rc.d pkgconfig
+inherit autotools python-dir perlnative cpan-base update-rc.d pkgconfig systemd
+
+SYSTEMD_PACKAGES = "${PN}"
+SYSTEMD_SERVICE_${PN} = "qpidd.service"
 
 # Env var which tells perl if it should use host (no) or target (yes) settings
 export PERLCONFIGTARGET = "${@is_target(d)}"
@@ -34,7 +37,11 @@ EXTRA_OEMAKE += " CPPFLAGS=-Wno-unused-function \
 
 do_install_append() {
      install -d ${D}${sysconfdir}/init.d
+     install -d ${D}${systemd_unitdir}/system/
      install -m 0755 ${WORKDIR}/qpidd ${D}${sysconfdir}/init.d/qpidd
+     mv ${D}${sysconfdir}/init.d/qpidd.service ${D}${systemd_unitdir}/system/ 
+     sed -i '/^User=.*$/d' ${D}${systemd_unitdir}/system/qpidd.service
+     sed -i '/^Group=.*$/d' ${D}${systemd_unitdir}/system/qpidd.service
 }
 
 PACKAGES += "qmfgen qmfgen-python qmfgen-python-dbg"
@@ -45,7 +52,8 @@ FILES_qmfgen-python = "${PYTHON_SITEPACKAGES_DIR}/*"
 
 FILES_qmfgen-python-dbg += "${PYTHON_SITEPACKAGES_DIR}/.debug/*"
 
-FILES_${PN} += "${libdir}/${PN}/tests/test_store.so"
+FILES_${PN} += "${libdir}/${PN}/tests/test_store.so \
+                ${systemd_unitdir} "
 
 FILES_${PN}-dev += "${libdir}/${PN}/tests/test_store.so "
 
