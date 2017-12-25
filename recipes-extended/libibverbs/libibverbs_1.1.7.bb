@@ -25,3 +25,6 @@ do_install_append() {
         mkdir -p ${D}${sysconfdir}/libibverbs.d
         rm -f ${D}${libdir}/libibverbs.la
 }
+
+PROVIDES = "virtual/libibverbs"
+RPROVIDES_${PN} = "virtual/libibverbs"
