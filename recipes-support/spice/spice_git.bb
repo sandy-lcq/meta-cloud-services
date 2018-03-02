@@ -35,6 +35,7 @@ SRC_URI += " \
         file://spice-fix-CVE-2013-4282.patch \
         file://configure.ac-add-subdir-objects-to-AM_INIT_AUTOMAKE.patch \
         file://build-allow-separated-src-and-build-dirs.patch \
+        file://v0.12.4_0001-spice-Fix-compile-problems-against-spice-0.12.4-with.patch \
         "
 
 S = "${WORKDIR}/git"
